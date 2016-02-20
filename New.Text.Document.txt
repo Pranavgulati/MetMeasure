@@ -1,0 +1,47 @@
+float RGB[3];
+int redLed = 11; // red LED in Digital Pin 11 (PWM)
+int greenLed = 10; // green LED in Digital Pin 10 (PWM)
+int delaymood = 100;
+int sensorValue;
+int sensorValue1;
+int sum,i;
+float avg;
+
+void setup(){
+pinMode(redLed,OUTPUT); 
+pinMode(greenLed,OUTPUT);
+Serial.begin(9600);
+}
+
+void function1(int x)
+{
+RGB[0]=255-x;  
+RGB[1]=0+x;
+analogWrite(redLed,RGB[0]);
+analogWrite(greenLed,RGB[1]);
+delay(delaymood);
+return;
+ }
+ float function2(void)
+ {
+   sum=0;
+  for (i=0;i<255;i++)
+  {int sensorValue = analogRead(A7);
+  sum+= sensorValue;}
+  avg=(float)sum/255; 
+  return avg;
+ }
+
+ void loop()
+{
+   //function1(5);
+   
+   //function1(0);
+   
+   //function1(255);
+   
+   function2;
+   
+   Serial.println(avg);
+  delay(100);    
+}
