@@ -14,20 +14,31 @@ RF24 radio(7, 8);
 #define GREEN 40
 
 const byte rxAddr[6] = "00001";
-long  calibrated=0;
-byte currentState=1;
+long int  calibrated = 0;
+
+byte currentState = 1;
+
+// ---------------------------------------------
+
 void setup()
-{ Serial.begin(9600);
+{ 
+  Serial.begin(9600);
   Serial.flush();
   radio.begin();
   radio.setRetries(15, 15);
-  radio.openWritingPipe(*rxAddr); 
+  radio.openWritingPipe(rxAddr); 
   radio.stopListening();
-  for(byte i=0;i<AVERAGE;i++){
+  
+  for(byte i=0;i<AVERAGE;i++)
+  {
     calibrated+=LDR();  
   }
-  calibrated/=AVERAGE;
+  
+  //calibrated/=AVERAGE;
 }
+
+//-------------------------------------------
+
 void ledDisplay(int x){
   
   if (x == 0) {
@@ -45,14 +56,19 @@ else if (x == 2) {
 
 }
 
+// -----------------------------------------------
+
 long int LDR(void)
 {
   long int avg;
   long int  sum = 0;
+  
   for (byte i = 0; i < AVERAGE; i++)
-  { int sensorValue = analogRead(LDRpin);
+  { 
+    int sensorValue = analogRead(LDRpin);
     sum += sensorValue;
   }
+  
   avg = sum / AVERAGE;
   return avg;
 }
@@ -61,18 +77,26 @@ long int LDR(void)
 void loop()
 {
   ledDisplay(currentState/LATENCY);
+  
   int ldrValue=LDR();
-  if(ldrValue>calibrated+10){
-      if(currentState!=RED){currentState--;}
+  
+  if(ldrValue > calibrated+10){
+      if(currentState != RED){currentState--;}
         }
-  if(ldrValue<calibrated+10){
-      if(currentState!=GREEN){ currentState++;}
+        
+  if(ldrValue < calibrated+10){
+      if(currentState != GREEN){ currentState++;}
         }      
-   char text[] = "";
-  itoa(ldrValue,text,10);
-  Serial.print(calibrated);Serial.print("  ");Serial.println(ldrValue);
-  Serial.print("curs");Serial.println(currentState);Serial.println(text);
+        
+  String text = String(ldrValue, DEC);
+  
+  Serial.print("\n Calibrated - "); Serial.println(calibrated); 
+  Serial.print(" LDR Value - "); Serial.println(ldrValue);
+  Serial.print(" Current State - "); Serial.println(currentState/LATENCY);
+  Serial.print(" Text - "); Serial.println(text);
+
   radio.write(&text, sizeof(text));
-  delay(5);
+  
+  delay(1000);
   
 }
