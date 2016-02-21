@@ -5,13 +5,13 @@
 RF24 radio(7, 8);
 
 #define AVERAGE 2
-#define LATENCY 10
+#define LATENCY 20
 #define RED 0
-#define YELLOW 10
-#define GREEN 20
+#define YELLOW 20
+#define GREEN 40
 #define LDRpin 14
-#define greenLed 3
-#define redLed  5
+#define greenLed 5
+#define redLed  3
 
 byte currentState = 1;
 long int calibrated = 0;
@@ -54,8 +54,11 @@ void setup()
   Serial.begin(9600);
     
   radio.begin();
-  radio.openReadingPipe(0, *rxAddr);
-
+  radio.openReadingPipe(0, rxAddr);
+  for(byte i=0;i<AVERAGE;i++){
+    calibrated+=LDR();  
+  }
+  calibrated/=AVERAGE;
   radio.startListening();
 }
 
@@ -84,7 +87,8 @@ void setup()
       currentState++;
     }
   }
-  //Serial.print(calibrated);Serial.print("  ");Serial.println(ldrValue);
-  //Serial.print("curs");Serial.println(currentState);
+  Serial.print(calibrated);Serial.print("  ");Serial.println(ldrValue);
+//Serial.print("recv");Serial.print(temp.toInt());
+  Serial.print("curs");Serial.println(currentState);
 
 }

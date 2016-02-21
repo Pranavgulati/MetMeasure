@@ -11,7 +11,7 @@ RF24 radio(7, 8);
 #define LATENCY 20
 #define RED 0
 #define YELLOW 20
-#define GREEN 40
+#define GREEN 49
 
 const byte rxAddr[6] = "00001";
 long  calibrated=0;
@@ -21,7 +21,7 @@ void setup()
   Serial.flush();
   radio.begin();
   radio.setRetries(15, 15);
-  radio.openWritingPipe(*rxAddr); 
+  radio.openWritingPipe(rxAddr); 
   radio.stopListening();
   for(byte i=0;i<AVERAGE;i++){
     calibrated+=LDR();  
@@ -68,9 +68,10 @@ void loop()
   if(ldrValue<calibrated+10){
       if(currentState!=GREEN){ currentState++;}
         }      
-   char text[] = "";
-  itoa(ldrValue,text,10);
+   char text[4];
   Serial.print(calibrated);Serial.print("  ");Serial.println(ldrValue);
+  ldrValue-=calibrated;
+  itoa(ldrValue,text,10);
   Serial.print("curs");Serial.println(currentState);Serial.println(text);
   radio.write(&text, sizeof(text));
   delay(5);
