@@ -3,6 +3,6 @@ Active occupancy detector modules that can detect the density of people in a clo
 this projects uses the NRF24L01 module that connects to its partnering nodes and share with each other crowd density information
 
 # Hardware Used
-NRF24L01
-LDR
-Atemega328
+- NRF24L01
+- LDR
+- Atemega328
